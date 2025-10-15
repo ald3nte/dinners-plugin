@@ -1,3 +1,33 @@
+# Wtyczka do obiadków
+## Instalacja:
+1.Sklonuj kod aplikacji \
+2. Przejdz w google do "Zarządzaj rozszerzeniami" 
+<p>
+  <img width="420" height="581" alt="image" src="https://github.com/user-attachments/assets/79b4bc8e-0fd2-4463-ac6f-d68de9a6a40b" />
+</p>
+3. Wybierz "Załaduj rozpakowane" <br/>
+<img width="230" height="129" alt="image" src="https://github.com/user-attachments/assets/ce979699-6495-46f9-ad04-6beeb91146fb" /> <br/>
+4. Wskaż folder "build" w folderze aplikacji <br/>
+
+## Instrukcja obsługi
+1. Po kliknięciu na wtyczkę pokaże się okno gdzie:
+   - Jednorazowo podajemy imię
+   - Podajemy tekst obiadku na stronie (bez "Zwierzyniec-" i "Dirret-")
+   - Wpisujemy komentarz
+   - Zatwierdzamy <br/>
+<img width="383" height="647" alt="image" src="https://github.com/user-attachments/assets/eac6aaa2-b06b-467c-84dc-a4ed1ab9a8a8" /> <br/>
+2. Obiadki które zostały skomentowane będą podkreślone <br/>
+<img width="1154" height="354" alt="image" src="https://github.com/user-attachments/assets/acf7bdc6-cb20-43cb-a5c3-40edcee72215" /> <br/>
+3. Wykorzystywany jest fuzzy search więc akceptuje literówki <br/>
+
+## Zasady
+1. Nie ddosujemy bo jest ograniczony limit requestów w darmowym pakiecie xd <br/>
+2. Aktualnie admin usuwa i edytuje na życzenie <br/>
+3. Uwagi i wątpliwości mile widziane, prosze wrzucać tutaj: <br/> <img width="64" height="64" alt="trash" src="https://github.com/user-attachments/assets/15ffe94a-7ca9-493b-8c7b-95a7e24d4e22" /> <br/>
+
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
