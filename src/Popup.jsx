@@ -7,7 +7,9 @@ export default function Popup() {
   const [sentence, setSentence] = useState("");
   const [comment, setComment] = useState("");
   const [name, setName] = useState("");
-  const [annotations, setAnnotations] = useState([]);
+  const [dinners, setDinners] = useState([]);
+  const [expanded, setExpanded] = useState({}); // id: true/false
+  const [comments, setComments] = useState({}); // id: [comments]
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
 
@@ -15,21 +17,17 @@ export default function Popup() {
     chrome.storage.local.get({ name: "" }, (data) => {
       setName(data.name);
     });
-    // Pobierz adnotacje z Supabase
-    const fetchAnnotations = async () => {
-      const { data, error } = await supabase.rpc('get_dinner_list');
+    // Pobierz listę dań z Supabase
+    const fetchDinners = async () => {
+      const { data, error } = await supabase.rpc('get_dinner_list2');
       if (!error && data) {
-        setAnnotations(data.map(row => ({
-          sentence: row.sentence,
-          name: row.person,
-          image: row.image // zakładam, że masz pole image w bazie
-        })));
+        setDinners(data);
       } else {
-        setAnnotations([]);
-        if (error) alert('Błąd pobierania adnotacji: ' + error.message);
+        setDinners([]);
+        if (error) alert('Błąd pobierania dań: ' + error.message);
       }
     };
-    fetchAnnotations();
+    fetchDinners();
   }, []);
 
   const handleNameChange = (e) => {
@@ -128,22 +126,55 @@ export default function Popup() {
       setComment("");
       setImageFile(null);
       setImagePreview(null);
-      // Odśwież adnotacje po dodaniu
-      const { data, error: fetchError } = await supabase.rpc('get_dinner_list');
+      // Odśwież listę dań po dodaniu
+      const { data, error: fetchError } = await supabase.rpc('get_dinner_list2');
       if (!fetchError && data) {
-        setAnnotations(data.map(row => ({
-          sentence: row.sentence,
-          name: row.person,
-          image: row.image
-        })));
+        setDinners(data);
       }
     } else {
       alert('Błąd zapisu do bazy: ' + error.message);
     }
   };
 
+  // Funkcja pobierająca komentarze dla dania po id
+  const fetchComments = async (dinnerId) => {
+    if (comments[dinnerId]) return; // już pobrane
+    const { data, error } = await supabase
+      .from('comment')
+      .select('id,text')
+      .eq('dinner_id', dinnerId);
+    if (!error && data) {
+      setComments(prev => ({ ...prev, [dinnerId]: data }));
+    } else {
+      setComments(prev => ({ ...prev, [dinnerId]: [] }));
+      if (error) alert('Błąd pobierania komentarzy: ' + error.message);
+    }
+  };
+
+  // Funkcja usuwająca komentarz po id
+  const deleteComment = async (commentId, dinnerId) => {
+    const { error } = await supabase
+      .from('comment')
+      .delete()
+      .eq('id', commentId);
+    if (!error) {
+      // Odśwież komentarze dla dania (poczekaj na pobranie i ustawienie)
+      const { data, error: fetchError } = await supabase
+        .from('comment')
+        .select('id,text')
+        .eq('dinner_id', dinnerId);
+      if (!fetchError && data) {
+        setComments(prev => ({ ...prev, [dinnerId]: data }));
+      } else {
+        setComments(prev => ({ ...prev, [dinnerId]: [] }));
+      }
+    } else {
+      alert('Błąd usuwania komentarza: ' + error.message);
+    }
+  };
+
   return (
-    <div style={{ fontFamily: "sans-serif", width: 320, background: "#fff", borderRadius: 12, boxShadow: "0 2px 12px #0002", padding: 18 }}>
+    <div style={{ fontFamily: "sans-serif", width: 340, background: "#fff", borderRadius: 12, boxShadow: "0 2px 12px #0002", padding: 18 }}>
       <h2 style={{ textAlign: "center", color: "#3a3a3a", marginBottom: 10 }}>Adnotacje do obiadków</h2>
       <div style={{ marginBottom: 16, background: "#f8f8f8", borderRadius: 8, padding: 12, boxShadow: "0 1px 4px #0001" }}>
         <h3 style={{ margin: "0 0 8px 0", color: "#2a7ae2" }}>Podaj imię</h3>
@@ -186,31 +217,48 @@ export default function Popup() {
           Dodaj
         </button>
       </div>
-      <h3 style={{ color: "#2a7ae2", marginBottom: 8 }}>Skomentowane obiady</h3>
-      <div style={{ maxHeight: 180, overflowY: "auto", background: "#f8f8f8", borderRadius: 8, boxShadow: "0 1px 4px #0001", padding: 8 }}>
-        {annotations.length === 0 ? (
-          <div style={{ color: "#888", textAlign: "center", padding: 12 }}>Brak adnotacji</div>
+      <h3 style={{ color: "#2a7ae2", marginBottom: 8 }}>Lista dań</h3>
+      <div style={{ maxHeight: 220, overflowY: "auto", background: "#f8f8f8", borderRadius: 8, boxShadow: "0 1px 4px #0001", padding: 8 }}>
+        {dinners.length === 0 ? (
+          <div style={{ color: "#888", textAlign: "center", padding: 12 }}>Brak dań</div>
         ) : (
-          annotations.map((item, i) => (
-            <div key={i} style={{
+          dinners.map((item, i) => (
+            <div key={item.id} style={{
               margin: "8px 0",
               padding: 10,
               background: "#eaf1fb",
               borderRadius: 7,
               boxShadow: "0 1px 2px #0001"
             }}>
-              <div style={{ fontWeight: "bold", color: "#2a7ae2" }}>
+              <div
+                style={{ fontWeight: "bold", color: "#2a7ae2", cursor: "pointer" }}
+                onClick={async () => {
+                  setExpanded(prev => ({ ...prev, [item.id]: !prev[item.id] }));
+                  if (!expanded[item.id]) await fetchComments(item.id);
+                }}
+              >
                 {item.sentence}
               </div>
-              <div style={{ fontSize: "0.95em", color: "#444", marginTop: 4 }}>
-                {item.image && (
-                  <img
-                    src={item.image}
-                    alt="miniaturka"
-                    style={{ width: 60, height: 60, objectFit: "cover", borderRadius: 6, marginTop: 6 }}
-                  />
-                )}
-              </div>
+              {expanded[item.id] && (
+                <div style={{ marginTop: 8, background: "#fff", borderRadius: 6, boxShadow: "0 1px 2px #0001", padding: 8 }}>
+                  {comments[item.id] && comments[item.id].length > 0 ? (
+                    comments[item.id].map(c => (
+                      <div key={c.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid #eee", padding: "4px 0" }}>
+                        <span>{c.text}</span>
+                        <span
+                          style={{ color: "#e22", fontWeight: "bold", cursor: "pointer", marginLeft: 10 }}
+                          title="Usuń komentarz"
+                          onClick={() => deleteComment(c.id, item.id)}
+                        >
+                          &#10006;
+                        </span>
+                      </div>
+                    ))
+                  ) : (
+                    <div style={{ color: "#888", fontSize: 13 }}>Brak komentarzy</div>
+                  )}
+                </div>
+              )}
             </div>
           ))
         )}
