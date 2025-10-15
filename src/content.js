@@ -41,8 +41,7 @@ function highlightAnnotations(annotations) {
     } else if (path === `/main/render_make_order/${mondayNextWeek}`) {
       targets = [...document.querySelectorAll('li.meal_item label')];
     } else {
-      // nie przetwarzaj nic na innych stronach
-      return;
+      targets = [...document.querySelectorAll('ul.day li.float_left ul.suppliers_content li')];
     }
 
     function stripPrefixes(text) {
