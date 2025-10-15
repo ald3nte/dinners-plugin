@@ -12,10 +12,7 @@
   },
   "content_scripts": [
     {
-      "matches": [
-        "http://10.60.60.88/*",
-        "http://obiady.forcom.com.pl/*"
-      ],
+  "matches": ["http://10.60.60.88/*"],
       "js": ["fuse.min.js","supabase.min.js","content.js"]
     }
   ]
