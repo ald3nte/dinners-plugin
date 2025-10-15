@@ -5,7 +5,7 @@
 <p>
   <img width="420" height="581" alt="image" src="https://github.com/user-attachments/assets/79b4bc8e-0fd2-4463-ac6f-d68de9a6a40b" />
 </p>
-3. Wybierz "Załaduj rozpakowane" <br/>
+3. Włącz tryb developerski i Wybierz "Załaduj rozpakowane" <br/>
 <img width="230" height="129" alt="image" src="https://github.com/user-attachments/assets/ce979699-6495-46f9-ad04-6beeb91146fb" /> <br/>
 4. Wskaż folder "build" w folderze aplikacji <br/>
 
@@ -16,8 +16,11 @@
    - Wpisujemy komentarz
    - Zatwierdzamy <br/>
 <img width="383" height="647" alt="image" src="https://github.com/user-attachments/assets/eac6aaa2-b06b-467c-84dc-a4ed1ab9a8a8" /> <br/>
+<img width="391" height="244" alt="image" src="https://github.com/user-attachments/assets/d078ccfb-a75f-40a4-a445-2503926e9441" />
+
 2. Obiadki które zostały skomentowane będą podkreślone <br/>
-<img width="1154" height="354" alt="image" src="https://github.com/user-attachments/assets/acf7bdc6-cb20-43cb-a5c3-40edcee72215" /> <br/>
+<img width="651" height="405" alt="image" src="https://github.com/user-attachments/assets/d54d7909-c7dc-4bc1-a90e-bb0b36d55024" />
+ <br/>
 3. Wykorzystywany jest fuzzy search więc akceptuje literówki <br/>
 
 ## Zasady
