@@ -129,7 +129,7 @@ function highlightAnnotations(annotations) {
           const comment = annotations[best.refIndex].comment;
           const image = annotations[best.refIndex].image;
           // Podmień cały tekst elementu na <p> z komentarzem i stylami
-          if (best.score < 0.4) {
+          if (best.score < 0.6) {
             const p = document.createElement("p");
             p.style.display = "inline";
             p.style.textDecoration = "underline";
