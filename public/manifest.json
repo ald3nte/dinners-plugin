@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Adnotacje do obiadków",
+  "version": "1.0",
+  "description": "Dodawaj komentarze do wybranych obiadków",
+  "permissions": ["storage", "scripting", "activeTab"],
+  "host_permissions": [
+    "https://*.supabase.co/*"
+  ],
+  "action": {
+    "default_popup": "index.html"
+  },
+  "content_scripts": [
+    {
+  "matches": ["http://10.60.60.88/*"],
+      "js": ["fuse.min.js","supabase.min.js","content.js"]
+    }
+  ]
+}
